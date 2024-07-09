@@ -98,7 +98,7 @@ const GiftItem = ({ gift, onChooseGift }) => {
     <GiftItemWrapper className={fadeOut ? 'fade-out' : ''}>
       <GiftImage src={gift.image} alt={gift.name} />
       <GiftName>{gift.name}</GiftName>
-      <QuantityLabel>Quantidade disponível: {gift.quantityAvailable}</QuantityLabel>
+      <QuantityLabel>Escolha essa opção, cartões disponiveis: {gift.quantityAvailable}</QuantityLabel>
       <GuestNameInput
         type="text"
         placeholder="Seu nome e sobrenome"
