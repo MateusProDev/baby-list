@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { updateDoc, doc } from 'firebase/firestore'; // Importa apenas updateDoc e doc, que são utilizados
 import styled from 'styled-components';
 import Confetti from 'react-confetti';
 
@@ -70,6 +69,12 @@ const SuccessMessage = styled.div`
   opacity: 0.9;
 `;
 
+const QuantityLabel = styled.p`
+  font-size: 14px;
+  color: #666666;
+  margin-top: 8px;
+`;
+
 const GiftItem = ({ gift, onChooseGift }) => {
   const [guestName, setGuestName] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -93,6 +98,7 @@ const GiftItem = ({ gift, onChooseGift }) => {
     <GiftItemWrapper className={fadeOut ? 'fade-out' : ''}>
       <GiftImage src={gift.image} alt={gift.name} />
       <GiftName>{gift.name}</GiftName>
+      <QuantityLabel>Quantidade disponível: {gift.quantityAvailable}</QuantityLabel>
       <GuestNameInput
         type="text"
         placeholder="Seu nome e sobrenome"
