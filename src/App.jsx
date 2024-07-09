@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
-import { GoogleAuthProvider, signInWithRedirect, getAuth, getRedirectResult } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import GiftList from './components/GiftList';
 import Convidados from './components/Convidados';
 import styled from 'styled-components';
@@ -97,25 +97,12 @@ const App = () => {
     const provider = new GoogleAuthProvider();
     
     try {
-      await signInWithRedirect(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user);
     } catch (error) {
       console.error('Erro ao autenticar com Google:', error);
     }
   };
-
-  // Verificar se há um resultado de redirecionamento após login
-  useEffect(() => {
-    const auth = getAuth();
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result) {
-          setUser(result.user);
-        }
-      })
-      .catch((error) => {
-        console.error('Erro ao obter resultado de redirecionamento:', error);
-      });
-  }, []);
 
   const handleLogout = () => {
     const auth = getAuth();
