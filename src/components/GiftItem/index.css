@@ -1,0 +1,62 @@
+/* src/styles/GiftItem.css */
+
+.gift-item {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gift-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+.gift-name {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.guest-name-input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.choose-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.choose-button:hover {
+  background-color: #0056b3;
+}
+
+@media (min-width: 600px) {
+  .gift-item {
+    margin: 20px;
+  }
+
+  .choose-button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+  }
+}
