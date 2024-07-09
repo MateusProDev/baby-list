@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import { updateDoc, doc } from 'firebase/firestore'; // Importa apenas updateDoc e doc, que são utilizados
+import styled from 'styled-components';
 import Confetti from 'react-confetti';
 
 const GiftItemWrapper = styled.div`
@@ -74,13 +75,15 @@ const GiftItem = ({ gift, onChooseGift }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
 
-  const handleChoose = () => {
+  const handleChoose = async () => {
     if (guestName.trim()) {
-      onChooseGift(gift.id, guestName);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 5000); // Mostrar por 5 segundos
-      setTimeout(() => setFadeOut(true), 300); // Começa a esmaecer após 0.3 segundos
-      setTimeout(() => setFadeOut(false), 1000); // Desaparece completamente após 1 segundo
+      const success = await onChooseGift(gift.id, guestName, gift.quantityAvailable);
+      if (success) {
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 5000); // Mostrar por 5 segundos
+        setTimeout(() => setFadeOut(true), 300); // Começa a esmaecer após 0.3 segundos
+        setTimeout(() => setFadeOut(false), 1000); // Desaparece completamente após 1 segundo
+      }
     } else {
       alert('Por favor, insira seu nome.');
     }

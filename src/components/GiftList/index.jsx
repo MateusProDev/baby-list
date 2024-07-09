@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebase/firebase';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore'; // Importa getDoc junto com as outras funções necessárias
+import { db } from '../../firebase/firebase'; // Importa db corretamente
 import styled from 'styled-components';
 import GiftItem from '../GiftItem';
-import './index.css';
 
 const Container = styled.div`
   display: flex;
@@ -29,7 +28,6 @@ const GiftListWrapper = styled.div`
 
 const GiftList = () => {
   const [availableGifts, setAvailableGifts] = useState([]);
-  const [chosenGifts, setChosenGifts] = useState([]);
 
   useEffect(() => {
     const fetchGifts = async () => {
@@ -42,14 +40,39 @@ const GiftList = () => {
     fetchGifts();
   }, []);
 
-  const handleChooseGift = async (id, guestName) => {
-    const giftDoc = doc(db, 'gifts', id);
-    await updateDoc(giftDoc, { chosenBy: guestName }); // Atualiza o documento do presente com o nome do convidado
+  const handleChooseGift = async (id, guestName, quantityAvailable) => {
+    try {
+      const giftRef = doc(db, 'gifts', id);
+      const giftDoc = await getDoc(giftRef); // Usa getDoc corretamente
 
-    // Encontra o presente escolhido na lista de disponíveis e move para a lista de escolhidos
-    const chosenGift = availableGifts.find(gift => gift.id === id);
-    setChosenGifts(prevChosenGifts => [...prevChosenGifts, chosenGift]);
-    setAvailableGifts(prevAvailableGifts => prevAvailableGifts.filter(gift => gift.id !== id));
+      if (giftDoc.exists()) {
+        if (quantityAvailable > 0) {
+          await updateDoc(giftRef, {
+            chosenBy: guestName,
+            quantityAvailable: quantityAvailable - 1 // Reduz a quantidade disponível do presente
+          });
+          
+          // Atualiza a lista de presentes disponíveis
+          setAvailableGifts(prevGifts => prevGifts.map(gift => {
+            if (gift.id === id) {
+              return { ...gift, chosenBy: guestName, quantityAvailable: quantityAvailable - 1 };
+            }
+            return gift;
+          }));
+
+          return true; // Indica que a escolha foi bem-sucedida
+        } else {
+          alert('Este presente não está mais disponível.');
+        }
+      } else {
+        alert('Presente não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro ao escolher presente:', error);
+      alert('Erro ao escolher presente. Por favor, tente novamente mais tarde.');
+    }
+
+    return false; // Indica que houve um erro na escolha do presente
   };
 
   return (
@@ -60,7 +83,6 @@ const GiftList = () => {
           <GiftItem key={gift.id} gift={gift} onChooseGift={handleChooseGift} />
         ))}
       </GiftListWrapper>
-
     </Container>
   );
 };
