@@ -5,9 +5,7 @@ import GiftList from './components/GiftList';
 import Convidados from './components/Convidados';
 import styled from 'styled-components';
 import './App.css';
-
-// Importe o ícone de login específico que deseja usar
-import AccountCircle from '@mui/icons-material/AccountCircle'; // Exemplo de ícone de login do Material Icons
+import AccountCircle from '@mui/icons-material/AccountCircle'; // Importação correta do ícone
 
 const AppContainer = styled.div`
   font-family: 'Poppins', sans-serif;
@@ -69,31 +67,9 @@ const Menu = styled.div`
   background-color: #ff6b6b;
   padding: 10px;
   border-radius: 10px;
-  display: none;
 
-  @media (max-width: 768px) {
-    display: ${({ open }) => (open ? 'block' : 'none')};
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    margin-bottom: 10px;
-    text-align: center;
-  }
-
-  a {
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    &:hover {
-      color: #ffd1d1;
-    }
+  @media (min-width: 769px) {
+    display: none; /* Esconde o menu em telas maiores */
   }
 `;
 
@@ -135,7 +111,9 @@ const App = () => {
               <li><AccountCircle onClick={handleLogin} style={{ cursor: 'pointer', fontSize: '2rem' }} /></li>
             )}
           </ul>
-          <Menu open={menuOpen}>
+        </Nav>
+        {menuOpen && (
+          <Menu>
             <ul>
               <li><Link to="/" onClick={toggleMenu}>Lista de Presentes</Link></li>
               {user ? (
@@ -145,7 +123,7 @@ const App = () => {
               )}
             </ul>
           </Menu>
-        </Nav>
+        )}
         <Routes>
           <Route path="/" element={<GiftList />} />
           {user ? (
