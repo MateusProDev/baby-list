@@ -1,8 +1,7 @@
-// src/components/Convidados.jsx
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../firebase/firebase'; // Importando auth aqui
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -62,6 +61,21 @@ const ChosenBy = styled.p`
   color: #6c757d;
 `;
 
+const LogoutButton = styled.button`
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  &:hover {
+    background-color: #ff4c4c;
+  }
+`;
+
 const Convidados = () => {
   const [gifts, setGifts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -86,6 +100,16 @@ const Convidados = () => {
     fetchGifts();
   }, []);
 
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+      })
+      .catch((error) => {
+        console.error('Erro ao deslogar:', error);
+      });
+  };
+
   const filteredGifts = gifts.filter(gift =>
     gift.chosenBy && gift.chosenBy.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -100,15 +124,18 @@ const Convidados = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       {user ? (
-        <ChosenGiftList>
-          {filteredGifts.map(gift => (
-            <ChosenGiftItem key={gift.id}>
-              <GiftImage src={gift.image} alt={gift.name} />
-              <GiftName>{gift.name}</GiftName>
-              <ChosenBy>Escolhido por: {gift.chosenBy}</ChosenBy>
-            </ChosenGiftItem>
-          ))}
-        </ChosenGiftList>
+        <>
+          <ChosenGiftList>
+            {filteredGifts.map(gift => (
+              <ChosenGiftItem key={gift.id}>
+                <GiftImage src={gift.image} alt={gift.name} />
+                <GiftName>{gift.name}</GiftName>
+                <ChosenBy>Escolhido por: {gift.chosenBy}</ChosenBy>
+              </ChosenGiftItem>
+            ))}
+          </ChosenGiftList>
+          <LogoutButton onClick={handleLogout}>Deslogar</LogoutButton>
+        </>
       ) : (
         <p>Você precisa estar autenticado para ver os presentes escolhidos.</p>
       )}

@@ -5,7 +5,7 @@ import GiftList from './components/GiftList';
 import Convidados from './components/Convidados';
 import styled from 'styled-components';
 import './App.css';
-import AccountCircle from '@mui/icons-material/AccountCircle'; // Importação correta do ícone
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 const AppContainer = styled.div`
   font-family: 'Poppins', sans-serif;
@@ -73,6 +73,17 @@ const Menu = styled.div`
   }
 `;
 
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  span {
+    font-size: 1rem;
+    color: white;
+  }
+`;
+
 const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null); // Estado para armazenar informações do usuário logado
@@ -93,6 +104,16 @@ const App = () => {
     }
   };
 
+  const handleLogout = () => {
+    const auth = getAuth();
+    auth.signOut().then(() => {
+      setUser(null);
+      setMenuOpen(false); // Fecha o menu após logout
+    }).catch((error) => {
+      console.error('Erro ao deslogar:', error);
+    });
+  };
+
   return (
     <Router>
       <AppContainer>
@@ -106,7 +127,10 @@ const App = () => {
           <ul>
             <li><Link to="/">Lista de Presentes</Link></li>
             {user ? (
-              <li><Link to="/convidados">Presentes Escolhidos</Link></li>
+              <>
+                <li><Link to="/convidados">Presentes Escolhidos</Link></li>
+                <li><UserInfo><span>{user.displayName}</span><AccountCircle onClick={handleLogout} style={{ cursor: 'pointer', fontSize: '2rem' }} /></UserInfo></li>
+              </>
             ) : (
               <li><AccountCircle onClick={handleLogin} style={{ cursor: 'pointer', fontSize: '2rem' }} /></li>
             )}
@@ -117,7 +141,10 @@ const App = () => {
             <ul>
               <li><Link to="/" onClick={toggleMenu}>Lista de Presentes</Link></li>
               {user ? (
-                <li><Link to="/convidados" onClick={toggleMenu}>Presentes Escolhidos</Link></li>
+                <>
+                  <li><Link to="/convidados" onClick={toggleMenu}>Presentes Escolhidos</Link></li>
+                  <li><UserInfo><span>{user.displayName}</span><AccountCircle onClick={() => { handleLogout(); toggleMenu(); }} style={{ cursor: 'pointer', fontSize: '2rem' }} /></UserInfo></li>
+                </>
               ) : (
                 <li><AccountCircle onClick={() => { handleLogin(); toggleMenu(); }} style={{ cursor: 'pointer', fontSize: '2rem' }} /></li>
               )}
