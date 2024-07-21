@@ -1,3 +1,4 @@
+// src/components/Convidados.jsx
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../firebase/firebase'; // Importando auth aqui

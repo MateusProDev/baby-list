@@ -1,4 +1,4 @@
-// Importe as funções necessárias do SDK do Firebase
+// src/firebase/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
@@ -13,20 +13,15 @@ const firebaseConfig = {
   appId: "1:224313903361:web:0aee684bd0c21cc46f7300"
 };
 
-// Inicialize o aplicativo Firebase
 const app = initializeApp(firebaseConfig);
-
-// Obtenha uma instância do Firestore e do Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Função para login com Google
 const signInWithGoogle = () => {
   return signInWithPopup(auth, provider);
 };
 
-// Função para logout
 const signOutFromGoogle = () => {
   return signOut(auth);
 };
